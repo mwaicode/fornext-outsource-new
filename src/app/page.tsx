@@ -200,7 +200,7 @@ const workWays = [
 
 export default function HomePage() {
   return (
-    <div className="bg-gray-800 text-gray-100 overflow-hidden">
+    <div className="bg-gray-900 text-gray-100 overflow-hidden">
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 bg-gradient-to-br from-blue-800 to-gray-700 text-white">
         <motion.h1
