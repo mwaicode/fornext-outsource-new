@@ -1,0 +1,65 @@
+/* components/Loader.module.css */
+.loaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full height of the viewport */
+    background-color: #f8f9fa; /* Soft light background for elegance */
+  }
+  
+  .loaderWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .eagle {
+    width: 50px; /* Further reduced size for a cleaner look */
+    height: 50px;
+    border-radius: 50%; /* Round image */
+    object-fit: cover; /* Ensure image fits */
+    position: absolute;
+    z-index: 10; /* Bring the eagle in front */
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15); /* Very subtle shadow */
+  }
+  
+  .loader {
+    border: 2px solid rgba(0, 123, 255, 0.4); /* Thinner blue border for a sleek look */
+    border-top: 2px solid transparent; /* Transparent top */
+    border-radius: 50%;
+    width: 70px; /* Size of the loader */
+    height: 70px; /* Size of the loader */
+    animation: spin 0.8s linear infinite; /* Faster spin for a modern feel */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .loaderWrapper::after {
+    content: '';
+    position: absolute;
+    width: 90px; /* Slightly larger for a subtle effect */
+    height: 90px; /* Size of the outer circle */
+    border: 2px solid rgba(0, 123, 255, 0.1); /* Very light outer border */
+    border-radius: 50%;
+    animation: pulse 1.2s infinite; /* Pulsing effect */
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.02); /* Subtle scaling */
+      opacity: 0.4; /* Reduced opacity for a sleek effect */
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
