@@ -1,18 +1,76 @@
+
+
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { registerClient } from "../../api/auth"; // adjust the import path based on your structure
+import { useRouter } from "next/navigation";
 
 export default function ClientSignupPage() {
+  const router = useRouter();
+
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    country: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [agree, setAgree] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!agree) {
+      setError("You must agree to the Privacy Policy.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+    try {
+      const response = await registerClient({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        country: formData.country,
+        password: formData.password,
+      });
+
+      console.log("Registered:", response);
+      router.push("/client/login");
+    } catch (err: any) {
+      console.error("Registration failed:", err);
+      setError(err?.message || "Registration failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Side Image Section */}
+      {/* Left Image */}
       <div className="hidden md:flex md:w-1/2 bg-blue-900 items-center justify-center">
         <Image
-          src="/opo.jpg" // Replace with your own image
+          src="/opo.jpg"
           alt="Signup Illustration"
           width={500}
           height={500}
@@ -20,56 +78,81 @@ export default function ClientSignupPage() {
         />
       </div>
 
-      {/* Right Side Form Section */}
+      {/* Right Form */}
       <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-50 px-6 py-12">
         <div className="bg-white shadow-lg rounded-lg w-full max-w-lg p-8">
-          {/* Logo */}
           <div className="flex justify-center mb-6">
-            <Image
-              src="/log.jpg" // Replace with your Fornxt logo
-              alt="Fornxt Logo"
-              width={140}
-              height={40}
-            />
+            <Image src="/log.jpg" alt="Fornxt Logo" width={140} height={40} />
           </div>
 
           <h1 className="text-2xl font-bold text-center text-blue-800 mb-2">
             Create your company account
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-gray-600 mb-6">
             Discover global talent and hire within 48 hours.
           </p>
 
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {error && (
+            <p className="text-red-600 text-sm text-center mb-4">{error}</p>
+          )}
+
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            onSubmit={handleSubmit}
+          >
             <input
+              name="firstName"
               type="text"
               placeholder="First Name*"
-              className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded text-gray-900"
+              required
             />
             <input
+              name="lastName"
               type="text"
               placeholder="Last Name*"
-              className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              value={formData.lastName}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded text-gray-900"
+              required
+            /> 
             <input
+              name="email"
               type="email"
               placeholder="Company Email*"
-              className="md:col-span-2 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.email}
+              onChange={handleChange}
+              className="md:col-span-2 p-3 border border-gray-300 rounded text-gray-900"
+              required
             />
             <input
+              name="country"
               type="text"
               placeholder="Company's Country*"
-              className="md:col-span-2 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.country}
+              onChange={handleChange}
+              className="md:col-span-2 p-3 border border-gray-300 rounded text-gray-900"
+              required
             />
             <input
+              name="password"
               type="password"
               placeholder="Set Password*"
-              className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.password}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded text-gray-900"
+              required
             />
             <input
+              name="confirmPassword"
               type="password"
               placeholder="Confirm Password*"
-              className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded text-gray-900"
+              required
             />
 
             <p className="text-xs text-black-500 md:col-span-2">
@@ -91,14 +174,14 @@ export default function ClientSignupPage() {
 
             <button
               type="submit"
+              disabled={!agree || loading}
               className={`md:col-span-2 mt-4 w-full p-3 text-white font-semibold rounded ${
                 agree
                   ? "bg-blue-700 hover:bg-blue-800"
                   : "bg-gray-400 cursor-not-allowed"
               } transition`}
-              disabled={!agree}
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
