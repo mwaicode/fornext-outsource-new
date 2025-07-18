@@ -105,10 +105,17 @@ export const registerTalent = async (formData: {
 };
 
 // === LOGIN ===
+// export const loginClient = async (data: {
+//   email: string;
+//   password: string;
+// }) => {
+//   const response = await axios.post(`${API_URL}/auth/login`, data);
+//   return response.data;
+// };
 export const loginClient = async (data: {
   email: string;
   password: string;
 }) => {
-  const response = await axios.post(`${API_URL}/auth/login`, data);
+  const response = await axios.post(`${API_URL}/clients/login`, data); // <- updated path
   return response.data;
 };
