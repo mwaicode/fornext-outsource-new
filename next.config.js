@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // ✅ don't block deploy on ESLint
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // ✅ don't block deploy on TS errors
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
