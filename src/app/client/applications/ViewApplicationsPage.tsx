@@ -5,20 +5,42 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { FileText, UserCircle2 } from "lucide-react";
 
+// Types
+interface Talent {
+  fullName: string;
+  role: string;
+  experience: number;
+  cvUrl?: string;
+}
+
+interface Application {
+  id: string | number;
+  status: "pending" | "reviewed" | "rejected";
+  talent: Talent;
+}
+
 export default function ViewApplicationsPage() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
 
-  const [applications, setApplications] = useState<unknown[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!jobId) return;
 
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/applications/job/${jobId}`)
+      .get<Application[]>(
+        `${process.env.NEXT_PUBLIC_API_URL}/applications/job/${jobId}`
+      )
       .then((res) => setApplications(res.data))
-      .catch((err) => console.error("Application fetch error:", err))
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          console.error("❌ Application fetch error:", err.message);
+        } else {
+          console.error("❌ Application fetch error:", err);
+        }
+      })
       .finally(() => setLoading(false));
   }, [jobId]);
 
@@ -33,21 +55,25 @@ export default function ViewApplicationsPage() {
           <p>No applications submitted yet.</p>
         ) : (
           <ul className="space-y-4">
-            {applications.map((app: any) => (
+            {applications.map((app) => (
               <li
                 key={app.id}
                 className="bg-white p-5 rounded-xl shadow-md border border-gray-100"
               >
                 <div className="flex items-center gap-3">
                   <UserCircle2 className="w-8 h-8 text-blue-600" />
-                  <h3 className="font-semibold text-lg">{app.talent.fullName}</h3>
-                  <span className={`ml-auto text-sm px-3 py-1 rounded-full ${
-                    app.status === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : app.status === "reviewed"
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-red-100 text-red-700"
-                  }`}>
+                  <h3 className="font-semibold text-lg">
+                    {app.talent.fullName}
+                  </h3>
+                  <span
+                    className={`ml-auto text-sm px-3 py-1 rounded-full ${
+                      app.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : app.status === "reviewed"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
                     {app.status}
                   </span>
                 </div>
