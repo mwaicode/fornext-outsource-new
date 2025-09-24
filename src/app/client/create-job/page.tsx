@@ -1,11 +1,9 @@
-
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { CheckCircle2, UserCircle2, Code, MonitorSmartphone, LayoutDashboard } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 export default function CreateJobPage() {
   const router = useRouter();

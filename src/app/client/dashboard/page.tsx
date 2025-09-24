@@ -197,7 +197,6 @@ import {
   Briefcase,
   Users,
   FileText,
-  HelpCircle,
   Sparkles,
   LayoutDashboard,
   LogOut,
@@ -207,7 +206,6 @@ import {
   Calendar,
   MapPin,
   Star,
-  TrendingUp,
   Clock,
   Building,
 } from "lucide-react";
