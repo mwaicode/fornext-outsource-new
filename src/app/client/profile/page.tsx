@@ -117,8 +117,6 @@
 
 
 
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -155,14 +153,19 @@ export default function ClientProfilePage() {
       window.location.href = "/client/login";
       return;
     }
-    const data: Client = JSON.parse(stored);
-    setClient(data);
-    setForm({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      country: data.country,
-    });
+    try {
+      const data: Client = JSON.parse(stored);
+      setClient(data);
+      setForm({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        country: data.country,
+      });
+    } catch {
+      localStorage.removeItem("client");
+      window.location.href = "/client/login";
+    }
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,16 +174,20 @@ export default function ClientProfilePage() {
 
   const handleSubmit = async () => {
     if (!client) return;
-    
+
     try {
-      const res = await axios.put(
+      const res = await axios.put<Client>(
         `${process.env.NEXT_PUBLIC_API_URL}/clients/${client.id}`,
         form
       );
       alert("✅ Profile updated!");
       localStorage.setItem("client", JSON.stringify(res.data));
-    } catch (err) {
-      alert("❌ Update failed");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(`❌ Update failed: ${err.message}`);
+      } else {
+        alert("❌ Update failed");
+      }
     }
   };
 

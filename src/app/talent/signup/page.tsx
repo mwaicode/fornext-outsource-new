@@ -106,8 +106,15 @@ export default function TalentSignupPage() {
       });
 
       router.push("/talent/login?success=registered");
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Registration failed. Please try again.");
+   } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === "object" && err && "response" in err) {
+        const serverError = err as { response?: { data?: { message?: string } } };
+        setError(serverError.response?.data?.message || "Registration failed. Please try again.");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
